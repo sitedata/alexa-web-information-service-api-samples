@@ -10,6 +10,7 @@ const AWS = require('aws-sdk')
 const rp   = require('request-promise')
 const aws4 = require('aws4')
 const util = require('util');
+const readline = require('readline');
 
 const amazonCognito = require('amazon-cognito-identity-js')
 
@@ -35,13 +36,38 @@ const poolData = {
   ClientId: cognitoClientId
 }
 
-
+const hiddenQuestion = query => new Promise((resolve, reject) => {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+  const stdin = process.openStdin();
+  process.stdin.on('data', char => {
+    char = char + '';
+    switch (char) {
+      case '\n':
+      case '\r':
+      case '\u0004':
+        stdin.pause();
+        break;
+      default:
+        process.stdout.clearLine();
+        readline.cursorTo(process.stdout, 0);
+        process.stdout.write(query + Array(rl.line.length + 1).join('*'));
+        break;
+    }
+  });
+  rl.question(query, value => {
+    rl.history = rl.history.slice(1);
+    resolve(value);
+  });
+});
 
 function getCognitoLoginKey() {
   return `cognito-idp.${cognitoRegion}.amazonaws.com/${cognitoUserPoolId}`
 }
 
-function getCredentials(email, password) {
+function getCredentials(email) {
   var awsCredentials = {}
 
   return new Promise(function(resolve, reject) {
@@ -54,10 +80,16 @@ function getCredentials(email, password) {
     var curTime = Date.now()
     if (new Date(awsCredentials.expireTime).getTime() > curTime)
       resolve(awsCredentials);
-    else
-      login(email, password)
-        .then( (credentials)=> resolve( credentials ))
-        .catch( (e)=> reject(e))
+    else {
+      const main = async () => {
+          console.log('Password: ')
+          const password = await hiddenQuestion('');
+          login(email, password)
+             .then( (credentials)=> resolve( credentials ))
+             .catch( (e)=> reject(e))
+        }
+      main();
+    }
   })
 }
 
@@ -129,13 +161,13 @@ function callAwis(awsCredentials, apikey, site) {
   .catch( (e)=> console.log('failed:'+e))
 }
 
-if (process.argv.length != 6) {
-  console.log(`Usage: node ${process.argv[1]} USER PASSWORD APIKEY SITE`);
+if (process.argv.length != 5) {
+  console.log(`Usage: node ${process.argv[1]} USER APIKEY SITE`);
   process.exit(0);
 }
 
-  getCredentials(process.argv[2], process.argv[3])
+  getCredentials(process.argv[2])
     .then(function(awsCredentials) {
-      callAwis(awsCredentials, process.argv[4], process.argv[5])
+      callAwis(awsCredentials, process.argv[3], process.argv[4])
     })
     .catch( (e)=> console.log(e))

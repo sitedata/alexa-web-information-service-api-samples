@@ -18,6 +18,7 @@
 import sys, os, base64, hashlib, hmac
 import logging, getopt
 import boto3
+import getpass
 from botocore.vendored import requests
 from datetime import datetime
 import time
@@ -57,14 +58,13 @@ Usage: awis.py [options]
   Options:
      --action                Service Action
      -u, --user              Username
-     -p, --password          Password
      -k, --key               API Key
      -o, --options           Service Options
      -?, --help       Print this help message and exit.
 
   Examples:
-     UrlInfo:		awis.py -k 98hu7.... -u User -p Password --action urlInfo --options "&ResponseGroup=Rank&Url=sfgate.com"
-     CategoryBrowse:	awis.py -k 98hu7.... -u User -p Password --action CategoryBrowse --options "&Descriptions=True&Path=Top%2FArts%2FVideo&ResponseGroup=Categories"
+     UrlInfo:		awis.py -k 98hu7.... -u User --action urlInfo --options "&ResponseGroup=Rank&Url=sfgate.com"
+     CategoryBrowse:	awis.py -k 98hu7.... -u User --action CategoryBrowse --options "&Descriptions=True&Path=Top%2FArts%2FVideo&ResponseGroup=Categories"
 """ )
 
 ###############################################################################
@@ -80,8 +80,8 @@ def parse_options( argv ):
     try:
         user_opts, user_args = getopt.getopt( \
             argv, \
-            'k:p:u:o:a:t:?', \
-            [ 'key=', 'user=', 'password=', 'options=', 'action=', 'help=' ] )
+            'k:u:o:a:t:?', \
+            [ 'key=', 'user=', 'options=', 'action=', 'help=' ] )
     except Exception as e:
         print('Command parse error:', e)
         log.error( "Unable to parse command line" )
@@ -98,8 +98,6 @@ def parse_options( argv ):
             opts['key'] = opt[1]
         elif opt[0] == '-u' or opt[0] == '--user':
             opts['user'] = opt[1]
-        elif opt[0] == '-p' or opt[0] == '--password':
-            opts['password'] = opt[1]
         elif opt[0] == '-a' or opt[0] == '--action':
             opts['action'] = opt[1]
         elif opt[0] == '-o' or opt[0] == '--options':
@@ -111,7 +109,6 @@ def parse_options( argv ):
 
     if 'key' not in opts or \
        'user' not in opts or \
-       'password' not in opts or \
        'action' not in opts:
         log.error( "Missing required arguments" )
         return None
@@ -125,10 +122,11 @@ def parse_options( argv ):
 ###############################################################################
 # refresh_credentials                                                         #
 ###############################################################################
-def refresh_credentials(user, password):
+def refresh_credentials(user):
     client_idp = boto3.client('cognito-idp', region_name=cognito_region, aws_access_key_id='', aws_secret_access_key='')
     client_identity = boto3.client('cognito-identity', region_name='us-east-1')
 
+    password = getpass.getpass('Password: ')
     response = client_idp.initiate_auth(
         ClientId=cognito_client_id,
         AuthFlow='USER_PASSWORD_AUTH',
@@ -207,10 +205,9 @@ if __name__ == "__main__":
         sys.exit( 0 )
 
     user = opts['user']
-    password = opts['password']
 
     if not os.path.isfile(credentials_file):
-        refresh_credentials(user, password)
+        refresh_credentials(user)
 
     # Get credentials to access api from local file. Refresh credentials from Cognito pool if necessary
     while True:
@@ -226,7 +223,7 @@ if __name__ == "__main__":
         cur_time = time.mktime(datetime.now().timetuple())
 
         if cur_time > exp_time:
-            refresh_credentials(user, password)
+            refresh_credentials(user)
         else:
             break
 

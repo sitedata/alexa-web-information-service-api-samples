@@ -17,7 +17,7 @@ mvn clean package
 
 5. Run:
 
-java -jar target/AWIS-API-1.0-jar-with-dependencies.jar <USER> <PASSWORD> <API_KEY> <SITE>
+java -jar target/AWIS-API-1.0-jar-with-dependencies.jar <USER> <API_KEY> <SITE>
 
 If you are getting "Not Authorized" messages, you probably have one of the
 following problems:

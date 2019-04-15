@@ -20,7 +20,7 @@ dotnet build
 
 5. Run:
 
- dotnet run user  password API_KEY site
+ dotnet run user API_KEY site
 
 If you are getting "Not Authorized" messages, you probably have one of the
 following problems:

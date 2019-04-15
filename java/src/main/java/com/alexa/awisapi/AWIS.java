@@ -58,7 +58,6 @@ public class AWIS {
   public String dateStamp;
 
   public String username = "";
-  public String password = "";
   public String apikey = "";
   public String site = "";
 
@@ -66,9 +65,8 @@ public class AWIS {
     this.helper = new CognitoHelper();
 
     this.username = args[0];
-    this.password = args[1];
-    this.apikey = args[2];
-    this.site = args[3];
+    this.apikey = args[1];
+    this.site = args[2];
   }
 
   private void setDate() {
@@ -87,8 +85,8 @@ public class AWIS {
       String provider = "";
 
 
-      if (args.length < 4) {
-          System.err.println("Usage: UrlInfo USER PASSWORD API_KEY SITE");
+      if (args.length < 3) {
+          System.err.println("Usage: UrlInfo USER API_KEY SITE");
           System.exit(-1);
       }
 
@@ -274,6 +272,45 @@ public class AWIS {
         }
     }
   }
+
+  private static String getPassword(String prompt) {
+      String password = "";
+      ConsoleEraser consoleEraser = new ConsoleEraser();
+      System.out.print(prompt);
+      BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+      consoleEraser.start();
+      try {
+          password = in.readLine();
+      }
+      catch (IOException e){
+          System.out.println("Error trying to read your password!");
+          System.exit(1);
+      }
+
+      consoleEraser.halt();
+      System.out.print("\b");
+
+      return password;
+  }
+
+  private static class ConsoleEraser extends Thread {
+      private boolean running = true;
+      public void run() {
+          while (running) {
+              System.out.print("\b ");
+              try {
+                  Thread.currentThread().sleep(1);
+              }
+              catch(InterruptedException e) {
+                  break;
+              }
+          }
+      }
+      public synchronized void halt() {
+          running = false;
+      }
+  }
+
   /**
    * This method validates the user by entering username and password
    *
@@ -290,7 +327,7 @@ public class AWIS {
       } catch (java.io.IOException ex) {
         ;
       }
-      String result = awisClient.helper.ValidateUser(awisClient.username, awisClient.password);
+      String result = awisClient.helper.ValidateUser(awisClient.username, getPassword("Password: "));
       if (result == null) {
           System.out.println("Username/password is invalid.");
           return false;
