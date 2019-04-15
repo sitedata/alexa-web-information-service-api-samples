@@ -16,7 +16,7 @@ pip install -r requirements.txt
 
 5. Run:
 
-python3 awis.py -u <USER> -p <PASSWORD> --key=<API_KEY> --action=urlInfo --options="&ResponseGroup=Rank&Url=sfgate.com"
+python3 awis.py -u <USER> --key=<API_KEY> --action=urlInfo --options="&ResponseGroup=Rank&Url=sfgate.com"
 
 If you are getting "Not Authorized" messages, you probably have one of the
 following problems:

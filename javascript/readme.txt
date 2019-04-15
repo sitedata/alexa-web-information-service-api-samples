@@ -16,7 +16,7 @@ npm install
 
 5. Run:
 
-node urlinfo.js <USER> <PASSWORD> <API_KEY> <SITE>
+node urlinfo.js <USER> <API_KEY> <SITE>
 
 If you are getting "Not Authorized" messages, you probably have one of the
 following problems:

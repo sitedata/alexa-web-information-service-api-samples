@@ -17,7 +17,7 @@ https://docs.aws.amazon.com/aws-sdk-php/v3/download/aws.phar
 
 5. Run:
 
-php urlinfo.php  <USER> <PASSWORD> <API_KEY> <SITE>
+php urlinfo.php  <USER> <API_KEY> <SITE>
 
 If you are getting "Not Authorized" messages, you probably have one of the
 following problems:

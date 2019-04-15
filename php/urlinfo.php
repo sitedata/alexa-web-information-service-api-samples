@@ -30,14 +30,14 @@ class UrlInfo {
     protected static $CognitoIdentityPoolId = "us-east-1:bff024bb-06d0-4b04-9e5d-eb34ed07f884";
     protected static $CachedCredentials     = "./.alexa_credentials";
 
-    public function UrlInfo($apiUser, $apiPassword, $apiKey,  $site) {
+    public function UrlInfo($apiUser, $apiKey,  $site) {
         $now = time();
         $this->amzDate = gmdate("Ymd\THis\Z", $now);
         $this->dateStamp = gmdate("Ymd", $now);
         $this->site = $site;
         $this->apiKey = $apiKey;
         $this->apiUser = $apiUser;
-        $this->apiPassword = $apiPassword;
+        $this->apiPassword = "";
     }
 
     /**
@@ -82,6 +82,16 @@ class UrlInfo {
       $this->expiration = $awsCredentials["Expiration"];
     }
 
+    protected function hide_term() {
+        if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN')
+            system('stty -echo');
+    }
+ 
+    protected function restore_term() {
+        if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN')
+            system('stty echo');
+    }
+
     /**
      * Get temporary $credentials
     */
@@ -93,6 +103,10 @@ class UrlInfo {
          'credentials' => false,
        ]);
 
+       echo "Password: ";
+       $this->hide_term();
+       $this->apiPassword = rtrim(fgets(STDIN), PHP_EOL);
+       $this->restore_term();
        try {
            $result = $this->$idProviderClient->initiateAuth([
                'AuthFlow' => 'USER_PASSWORD_AUTH',
@@ -263,18 +277,17 @@ class UrlInfo {
 
 }
 
-if (count($argv) < 4) {
-    echo "Usage: $argv[0] USER PASSWORD API_KEY SITE\n";
+if (count($argv) < 3) {
+    echo "Usage: $argv[0] USER API_KEY SITE\n";
     exit(-1);
 }
 else {
     $apiUser = $argv[1];
-    $apiPassword = $argv[2];
-    $apiKey = $argv[3];
-    $site = $argv[4];
+    $apiKey = $argv[2];
+    $site = $argv[3];
 }
 
-$urlInfo = new UrlInfo($apiUser, $apiPassword, $apiKey, $site);
+$urlInfo = new UrlInfo($apiUser, $apiKey, $site);
 $urlInfo->getUrlInfo();
 
 ?>
