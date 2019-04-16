@@ -2,7 +2,7 @@
 
 This repo contains code samples in various languages to make signed requests to the Alexa Web Information Service API on AWS Marketplace.
 
-The samples are designed to demontrate how to make a request to Alexa Web Information Service using the API user credentials and API plan key that are provided after subscribing to the service. You may subscribe to Alexa Web Information Service at https://aws.amazon.com/marketplace. (Note that you must have an AWS account with a valid credit card)
+The samples are designed to demonstrate how to make a request to Alexa Web Information Service using the API user credentials and API plan key that are provided after subscribing to the service. You may subscribe to Alexa Web Information Service at https://aws.amazon.com/marketplace/seller-profile?id=4a9dbf38-88b1-4e87-a459-271154a77d2e. (Note that you must have an AWS account with a valid credit card)
 
 Alexa's Web Services can help you create innovative web solutions and services based on Alexa's vast repository of information about the web. Developers, researchers, web site owners, and merchants can incorporate information about web sites directly into their own web sites or services. Users can access web site traffic data, related links, and a wide variety of other functionality and data.
 
