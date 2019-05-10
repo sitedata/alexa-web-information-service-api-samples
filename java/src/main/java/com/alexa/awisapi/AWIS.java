@@ -38,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 
 public class AWIS {
   private static final String SERVICE_HOST = "awis.api.alexa.com";
@@ -152,7 +153,7 @@ public class AWIS {
    */
   private static void callAWIS(AWIS awisClient)  throws IOException, Exception {
 
-      String canonicalQuery = "Action=urlInfo&ResponseGroup=Rank&Url=" + awisClient.site;
+      String canonicalQuery = "Action=urlInfo&ResponseGroup=Rank&Url=" + URLEncoder.encode(awisClient.site, StandardCharsets.UTF_8.toString());
       String accessKey  = awisClient.credentials.getAccessKeyId();
       String secretKey = awisClient.credentials.getSecretKey();
       String sessionToken = awisClient.credentials.getSessionToken();
