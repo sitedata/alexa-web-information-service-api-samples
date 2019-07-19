@@ -12,15 +12,16 @@ Tested with .NET Command Line Tools (2.1.403)
 3. Uncompress the zip file into a working directory.
 4. Compile Program.cs:
 
-dotnet add dotnet-core-awis.csproj package Aws4RequestSigner
-dotnet add dotnet-core-awis.csproj package AWSSDK.CognitoIdentityProvider
-dotnet add dotnet-core-awis.csproj package AWSSDK.CognitoIdentity
-dotnet add dotnet-core-awis.csproj package Amazon.Extensions.CognitoAuthentication
 dotnet build
 
 5. Run:
 
- dotnet run user API_KEY site
+ dotnet run <Alexa API Account> <API Portal Key> site
+
+ Alexa API Account: The email account used when registering in awis.alexa.com
+ API Portal Key: The api key located in the top right corner of awis.alexa.com once you
+                 register/login to the API Portal
+
 
 If you are getting "Not Authorized" messages, you probably have one of the
 following problems:
@@ -32,6 +33,6 @@ page and confirm you are subscribed to the product.
 and time are properly set on your computer.
 
 Copyright and License
-All content in this repository, unless otherwise stated, is Copyright © 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved. 
+All content in this repository, unless otherwise stated, is Copyright © 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
 Except where otherwise noted, all examples in this collection are licensed under the MIT license. The full license text is provided in the LICENSE file accompanying this repository.
