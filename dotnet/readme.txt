@@ -16,9 +16,8 @@ dotnet build
 
 5. Run:
 
- dotnet run <Alexa API Account> <API Portal Key> site
+ dotnet run <API Portal Key> site
 
- Alexa API Account: The email account used when registering in awis.alexa.com
  API Portal Key: The api key located in the top right corner of awis.alexa.com once you
                  register/login to the API Portal
 
